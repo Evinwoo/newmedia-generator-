@@ -1,0 +1,60 @@
+# ContentOS 项目说明（AI助手必读）
+
+## 这是什么项目
+
+ContentOS 是一个内容操作系统：把一篇原始内容（通常是小红书图文），根据不同平台规则、不同人群语言风格、不同语言本地化要求，自动转化为多个适配版本。
+
+## 核心运行逻辑
+
+```
+用户粘贴原文 / AI生成原文
+        ↓
+选择目标平台（可多选）：抖音/知乎/视频号/Twitter/Instagram/Reddit
+选择目标人群（可多选）：精致白领/下沉市场/宝妈/Z世代
+选择本地化语言（可选）：英文/日文/东南亚英文
+        ↓
+点击「开始转化」
+        ↓
+调用AI（通过OpenRouter API），按照skills/中的规则为每个平台生成版本
+        ↓
+右侧展示结果卡片，可复制/收藏/存入库
+```
+
+## 文件结构说明
+
+```
+/skills/platforms/    各平台写作规则（AI生成内容时必须遵守）
+/skills/audiences/    各人群语言风格规则
+/skills/localization/ 多语言本地化规则
+/templates/           各平台内容结构模板
+/prompts/             调用AI的提示词模板
+/research/            已验证的研究资料
+/cases/               真实转化案例记录
+/product/             产品规划文档
+```
+
+## 网页文件说明
+
+`app_openrouter.html` 是当前功能网页（单文件HTML，包含HTML+CSS+JS）
+
+- 技术栈：纯HTML/CSS/JavaScript，无框架，无需安装依赖
+- AI调用：通过OpenRouter API (https://openrouter.ai/api/v1/chat/completions)
+- API Key：用户在网页右上角输入，存储在浏览器localStorage
+- 本地直接用浏览器打开即可，不能在iframe/预览窗口中测试（CORS限制）
+
+## 修改指南
+
+1. 修改AI生成逻辑：编辑 `buildPrompt()` 函数
+2. 平台规则对应：JS中的 `platformRules` ↔ `skills/platforms/*.md`
+3. 人群规则对应：JS中的 `buildAudienceRule` ↔ `skills/audiences/*.md`
+4. 修改样式：CSS变量在 `<style>` 标签开头
+5. 不要使用localStorage之外的浏览器存储API
+
+## 当前功能状态
+
+- [x] 粘贴原文 → 多平台转化
+- [x] AI创作原文 → 转化
+- [x] OpenRouter API集成（流式输出）
+- [ ] 内容库（数据持久化）
+- [ ] 数据看板
+- [ ] 效果反馈/爆款分析
